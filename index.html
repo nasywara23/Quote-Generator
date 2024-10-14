@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <div class="quote-box">
+        <h2>Quote of The Day</h2>
+        <blockquote id="quote">Loading...</blockquote>
+        <span id="author">Loading...</span>
+        <div>
+            <button id="new-quote">New Quote</button>
+            <button id="tweet-quote"><img src="twitter.png" alt="">Tweet</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuote = ''; // Variabel untuk menyimpan quote saat ini
+        let currentAuthor = ''; // Variabel untuk menyimpan author saat ini
+
+        function fetchQuote() {
+            var category = 'success';
+            fetch('https://api.api-ninjas.com/v1/quotes?category=' + category, {
+                method: 'GET',
+                headers: { 'X-Api-Key': 'O7BxRb2h0C9vDQ7hUwefLA==DZOrYtzJPOPltAtd' },
+            })
+            .then(response => response.json())
+            .then(data => {
+                currentQuote = data[0].quote; // Simpan quote
+                currentAuthor = data[0].author; // Simpan author
+
+                // Menampilkan quote dan author di HTML
+                document.getElementById('quote').innerText = currentQuote;
+                document.getElementById('author').innerText = currentAuthor;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Fetch quote saat pertama kali halaman dimuat
+        fetchQuote();
+
+        // Event listener untuk tombol "New Quote"
+        document.getElementById('new-quote').addEventListener('click', fetchQuote);
+
+        // Event listener untuk tombol "Tweet"
+        document.getElementById('tweet-quote').addEventListener('click', function() {
+            let tweetUrl = `https://twitter.com/intent/tweet?text="${encodeURIComponent(currentQuote)}" - ${encodeURIComponent(currentAuthor)}`;
+            window.open(tweetUrl, '_blank'); // Buka URL tweet di tab baru
+        });
+    </script>
+
+</body>
+</html>
